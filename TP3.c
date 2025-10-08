@@ -30,7 +30,10 @@ t_processus *charger_processus(char *nom_fichier, int *nb_processus)
     t_processus *last = NULL;
     for (int i = 0; i < *nb_processus; i++)
     {
-        // t_processus *next = creer_processus();
+        char *res_str;
+        int res_str_size;
+        getline(&res_str, &res_str_size, file); // lire avec getline
+        // formater avec sscanf
     }
     fclose(file);
 }
