@@ -39,12 +39,12 @@ void processus_free_recursive(t_processus *process)
     }
 }
 
-t_processus *processus_load(char *nom_fichier, int nb_process)
+t_processus *processus_load(char *nom_fichier, int nb_processes)
 {
     FILE *file = fopen(nom_fichier, "r");
     t_processus *head = NULL;
     t_processus *last = NULL;
-    for (int i = 0; i < nb_process; i++)
+    for (int i = 0; i < nb_processes; i++)
     {
         char line[MAX_LINE_LENGTH];      // une ligne ne doit pas faire plus de MAX_LINE_LENGTH char
         fgets(line, sizeof(line), file); // on lit la ligne brute
@@ -107,7 +107,7 @@ FIFO *fifo_init_from_process(t_processus *process)
     while (elem != NULL)
     {
         // enfile l'élement dans la FIFO => modification du 'elem->suivant'
-        fifo_enfiler(res, elem);
+        fifo_queue(res, elem);
         elem = elem->suivant;
     }
     return res;
@@ -127,19 +127,19 @@ FIFO *fifo_init_sorted_from_process(t_processus *process)
     {
         // on garde la référence vers le prochain element, car 'fifo_enfiler_trie' modifie les process
         next_elem = elem->suivant;
-        fifo_enfiler_trie(res, elem);
+        fifo_queue_sorted(res, elem);
         elem = next_elem;
     }
     return res;
 }
 
-void fifo_free(FIFO **file)
+void fifo_free(FIFO **queue)
 {
-    if (file && *file)
+    if (queue && *queue)
     {
-        processus_free_recursive((*file)->first);
-        free(*file);
-        *file = NULL;
+        processus_free_recursive((*queue)->first);
+        free(*queue);
+        *queue = NULL;
     }
     else
     {
@@ -147,39 +147,39 @@ void fifo_free(FIFO **file)
     }
 }
 
-int fifo_vide(FIFO *file)
+int fifo_is_empty(FIFO *queue)
 {
-    if (!file)
+    if (!queue)
     {
         printf("!!! Trying to size NULL Fifo !!!\n");
         return -1;
     }
-    return file->size == 0 ? 1 : 0;
+    return queue->size == 0 ? 1 : 0;
 }
 
-void fifo_enfiler(FIFO *file, t_processus *process)
+void fifo_add(FIFO *queue, t_processus *process)
 {
-    int isEmpty = fifo_vide(file);
+    int isEmpty = fifo_is_empty(queue);
     if (isEmpty == -1)
     {
         printf("!!! Trying to queue on NULL Fifo !!!\n");
     }
     if (isEmpty == 1)
     {
-        file->first = process;
-        file->last = process;
+        queue->first = process;
+        queue->last = process;
     }
     else
     {
-        file->last->suivant = process;
-        file->last = process;
+        queue->last->suivant = process;
+        queue->last = process;
     }
-    file->size++;
+    queue->size++;
 }
 
-void fifo_enfiler_trie(FIFO *file, t_processus *process)
+void fifo_add_sorted(FIFO *queue, t_processus *process)
 {
-    int isEmpty = fifo_vide(file);
+    int isEmpty = fifo_is_empty(queue);
     if (isEmpty == -1)
     {
         printf("!!! Trying to queue on NULL Fifo !!!\n");
@@ -188,7 +188,7 @@ void fifo_enfiler_trie(FIFO *file, t_processus *process)
 
     t_processus *previous_elem = NULL;
     // si la liste est vide, il n'y a pas de suivant, et on laisse current_elem à NULL pour savoir qu'on doit mettre à jour 'last'
-    t_processus *curent_elem = (isEmpty == 1) ? NULL : file->first;
+    t_processus *curent_elem = (isEmpty == 1) ? NULL : queue->first;
     // => donc si la liste était vide on se retrouve avec previous et current à NULL
 
     // on essaie de récupérer l'élement dans lequel on doit remplacer l'attribut suivant.
@@ -207,7 +207,7 @@ void fifo_enfiler_trie(FIFO *file, t_processus *process)
     // => on met à jour 'last', parceque dans les instructions suivantes on va insérer à la fin de la liste ('previous_elem' sera le dernier élément de la liste et 'current_elem' sera NULL)
     if (curent_elem == NULL)
     {
-        file->last = process;
+        queue->last = process;
     }
 
     // si previous_elem est NULL, ça veut dire qu'on n'a pas itéré une seule fois dans le while au dessus (le previous_elem est mis à jour à chaque itération), ce qui donne de cas:
@@ -216,8 +216,8 @@ void fifo_enfiler_trie(FIFO *file, t_processus *process)
     // => on insère process en tête
     if (previous_elem == NULL)
     {
-        process->suivant = file->first;
-        file->first = process;
+        process->suivant = queue->first;
+        queue->first = process;
     }
     else
     {
@@ -229,40 +229,45 @@ void fifo_enfiler_trie(FIFO *file, t_processus *process)
         process->suivant = curent_elem;
     }
 
-    file->size++;
+    queue->size++;
 }
 
-t_processus *fifo_defiler(FIFO *file)
+t_processus *fifo_unqueue(FIFO *queue)
 {
+    int isEmpty = fifo_is_empty(queue);
     t_processus *res;
-    if (fifo_vide(file) == 1)
+    if (isEmpty == -1)
     {
         printf("!!! Trying to unqueue from NULL Fifo !!!\n");
         return NULL;
     }
-    else
+
+    if (isEmpty)
     {
-        res = file->first;
-        file->first = file->first->suivant;
-        file->size--;
-        if (fifo_vide(file) == 1)
-        {
-            file->last = NULL;
-        }
-        return res;
+        printf("!!! Trying to unqueue from an empty Fifo !!!\n");
+        return NULL;
     }
+
+    res = queue->first;
+    queue->first = queue->first->suivant;
+    queue->size--;
+    if (isEmpty)
+    {
+        queue->last = NULL;
+    }
+    return res;
 }
 
-void fifo_print(FIFO *file)
+void fifo_print(FIFO *queue)
 {
-    if (file)
+    if (queue)
     {
 
-        printf("[==FIFO=(size : %d)==]\n", file->size);
+        printf("[==FIFO=(size : %d)==]\n", queue->size);
         printf("pid | arrivee | duree\n");
-        processus_print(file->first);
+        processus_print(queue->first);
         printf("[====================]\n");
-        processus_print(file->last);
+        // processus_print(queue->last);
     }
     else
     {
@@ -270,9 +275,9 @@ void fifo_print(FIFO *file)
     }
 }
 
-int fifo_is_sorted(FIFO *file)
+int fifo_is_sorted(FIFO *queue)
 {
-    t_processus *elem = file->first;
+    t_processus *elem = queue->first;
     int local_max = -1;
     while (elem != NULL)
     {
@@ -290,8 +295,11 @@ int fifo_is_sorted(FIFO *file)
 
 int main()
 {
-    t_processus *open = processus_load("file", 6);
-    FIFO *fif = fifo_init_sorted_from_process(open);
+    t_processus *open = NULL;
+    FIFO *fif = NULL;
+
+    open = processus_load("file", 6);
+    fif = fifo_init_sorted_from_process(open);
     fifo_print(fif);
     printf("%d\n", fifo_is_sorted(fif));
 

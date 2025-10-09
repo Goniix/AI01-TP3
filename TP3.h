@@ -36,10 +36,10 @@ void processus_free_recursive(t_processus *process);
  * @brief Charge une liste de processus depuis un fichier (O de n). Les lignes ne doivent pas faire plus de MAX_LINE_LENGTH chars.
  *
  * @param nom_fichier Le chemin vers le fichier
- * @param nb_processus Nombre de processus à charger dans le fichier
+ * @param nb_processes Nombre de processus à charger dans le fichier
  * @return Le processus de tête
  */
-t_processus *processus_load(char *nom_fichier, int nb_process);
+t_processus *processus_load(char *nom_fichier, int nb_processes);
 
 /**
  * @brief Affiche un processus ligne par ligne dans le terminal (O de n)
@@ -65,7 +65,7 @@ FIFO *fifo_init();
 
 /**
  * @brief Initialise une FIFO à partir d'un processus en insérant les process dans l'ordre process (les process ne sont pas modifiés)(O de n)
- * @param p La tête du processus
+ * @param process La tête du processus
  *
  * @return Une FIFO peuplée des processus passés en paramètre
  */
@@ -73,7 +73,7 @@ FIFO *fifo_init_from_process(t_processus *process);
 
 /**
  * @brief Initialise une FIFO à partir d'un processus, en triant les processus en fonction de leur durée (l'ordre des process est modifié). (O de n**2)
- * @param p La tête du processus
+ * @param process La tête du processus
  *
  * @return Une FIFO triée peuplée des processus passés en paramètre
  */
@@ -81,60 +81,60 @@ FIFO *fifo_init_sorted_from_process(t_processus *process);
 
 /**
  * @brief Détruit les processus de la FIFO récursivement, puis la FIFO en elle même (O de n). La Fifo est set à null après exécution
- * @param p Un pointeur vers le pointeur de la FIFO, pour qu'on puisse set le pointeur de la Fifo à NULL
+ * @param queue Un pointeur vers le pointeur de la FIFO, pour qu'on puisse set le pointeur de la Fifo à NULL
  *
  */
-void fifo_free(FIFO **file);
+void fifo_free(FIFO **queue);
 
 /**
  * @brief Teste si la FIFO est vide (O de 1)
- * @param file La FIFO
+ * @param queue La FIFO
  *
  * @return 1 si elle ets vide, 0 sinon
  */
-int fifo_vide(FIFO *file);
+int fifo_is_empty(FIFO *queue);
 
 /**
  * @brief Ajoute un élément à la fin de la FIFO (O de 1)
- * @param file La FIFO
- * @param p Le processus à ajouter
+ * @param queue La FIFO
+ * @param process Le processus à ajouter
  *
  */
-void fifo_enfiler(FIFO *file, t_processus *process);
+void fifo_add(FIFO *queue, t_processus *process);
 
 /**
  * @brief Ajoute un élément à la FIFO, de sorte à garder la FIFO triée. L'élément est inséré juste après les autres processus de même 'duree' que lui. Si on enfile une fifo uniquement avec cette fonction alors elle est triée! (O de n)
- * @param file La FIFO
- * @param p Le processus à ajouter (son 'suivant' est altéré!)
+ * @param queue La FIFO
+ * @param process Le processus à ajouter (son 'suivant' est altéré!)
  *
  */
-void fifo_enfiler_trie(FIFO *file, t_processus *process);
+void fifo_add_sorted(FIFO *queue, t_processus *process);
 
 /**
  * @brief Défile le premier élément de la FIFO (O de 1). La FIFO n'aura plus aucune trace du processus, et le processus suivant du processus dépilé est mis à NULL
- * @param file La FIFO
+ * @param queue La FIFO
  *
  * @return L'élément retiré (IL DOIT ÊTRE FREE MANUELLEMENT PLUS TARD)
  */
-t_processus *fifo_defiler(FIFO *file);
+t_processus *fifo_unqueue(FIFO *queue);
 
 /**
  * @brief Affiche le contenu de la FIFO depuis le processus de tête, le dernier processus ainsi que la taille (O de n).
  *
- * @param process La file à afficher
+ * @param queue La FIFO à afficher
  */
-void fifo_print(FIFO *file);
+void fifo_print(FIFO *queue);
 
 /**
  * @brief Indique si la fifo est triée par 'duree' (O de n).
  *
- * @param process La file à afficher
- * @return 1 si elle est triée par 'duree', 0 sinon
+ * @param queue La FIFO à tester
+ * @return 1 si elle est triée par 'duree' dans l'ordre croissant, 0 sinon
  */
-int fifo_is_sorted(FIFO *file);
+int fifo_is_sorted(FIFO *queue);
 
 // les deux vont être pareils, on devra de tout de façon parse toute la liste à la recherche des process à t == arrivee
-void simuler_fcfs(FIFO *tableau, int nb_processus); // sauf que lui il est pas trié
-void simuler_sjf(FIFO *tableau, int nb_processus);  // et lui si
+void simuler_fcfs(FIFO *tab, int nb_processes); // sauf que lui il est pas trié
+void simuler_sjf(FIFO *tab, int nb_processes);  // et lui si
 
 #endif
