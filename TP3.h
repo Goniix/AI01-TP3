@@ -103,7 +103,7 @@ int fifo_vide(FIFO *file);
 void fifo_enfiler(FIFO *file, t_processus *process);
 
 /**
- * @brief Ajoute un élément à la FIFO, de sorte à garder la FIFO triée. L'élément est inséré juste après les autres processus de même 'duree' que lui. (O de n)
+ * @brief Ajoute un élément à la FIFO, de sorte à garder la FIFO triée. L'élément est inséré juste après les autres processus de même 'duree' que lui. Si on enfile une fifo uniquement avec cette fonction alors elle est triée! (O de n)
  * @param file La FIFO
  * @param p Le processus à ajouter (son 'suivant' est altéré!)
  *
@@ -124,6 +124,14 @@ t_processus *fifo_defiler(FIFO *file);
  * @param process La file à afficher
  */
 void fifo_print(FIFO *file);
+
+/**
+ * @brief Indique si la fifo est triée par 'duree' (O de n).
+ *
+ * @param process La file à afficher
+ * @return 1 si elle est triée par 'duree', 0 sinon
+ */
+int fifo_is_sorted(FIFO *file);
 
 // les deux vont être pareils, on devra de tout de façon parse toute la liste à la recherche des process à t == arrivee
 void simuler_fcfs(FIFO *tableau, int nb_processus); // sauf que lui il est pas trié

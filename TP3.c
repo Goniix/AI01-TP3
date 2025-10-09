@@ -270,11 +270,35 @@ void fifo_print(FIFO *file)
     }
 }
 
+int fifo_is_sorted(FIFO *file)
+{
+    t_processus *elem = file->first;
+    int local_max = -1;
+    while (elem != NULL)
+    {
+        if (elem->duree < local_max)
+            return 0;
+        else
+        {
+            local_max = elem->duree;
+            elem = elem->suivant;
+        }
+    }
+
+    return 1;
+}
+
 int main()
 {
     t_processus *open = processus_load("file", 6);
     FIFO *fif = fifo_init_sorted_from_process(open);
     fifo_print(fif);
+    printf("%d\n", fifo_is_sorted(fif));
+
+    open = processus_load("file", 6);
+    fif = fifo_init_from_process(open);
+    fifo_print(fif);
+    printf("%d\n", fifo_is_sorted(fif));
 
     return 0;
 }
