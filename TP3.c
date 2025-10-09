@@ -106,8 +106,29 @@ FIFO *fifo_init_from_process(t_processus *process)
     t_processus *elem = process;
     while (elem != NULL)
     {
+        // enfile l'élement dans la FIFO => modification du 'elem->suivant'
         fifo_enfiler(res, elem);
         elem = elem->suivant;
+    }
+    return res;
+}
+
+FIFO *fifo_init_sorted_from_process(t_processus *process)
+{
+    if (!process)
+    {
+        return NULL;
+    }
+    FIFO *res = fifo_init();
+    t_processus *elem = process;
+    t_processus *next_elem;
+
+    while (elem != NULL)
+    {
+        // on garde la référence vers le prochain element, car 'fifo_enfiler_trie' modifie les process
+        next_elem = elem->suivant;
+        fifo_enfiler_trie(res, elem);
+        elem = next_elem;
     }
     return res;
 }
@@ -136,7 +157,7 @@ int fifo_vide(FIFO *file)
     return file->size == 0 ? 1 : 0;
 }
 
-void *fifo_enfiler(FIFO *file, t_processus *process)
+void fifo_enfiler(FIFO *file, t_processus *process)
 {
     int isEmpty = fifo_vide(file);
     if (isEmpty == -1)
@@ -153,6 +174,61 @@ void *fifo_enfiler(FIFO *file, t_processus *process)
         file->last->suivant = process;
         file->last = process;
     }
+    file->size++;
+}
+
+void fifo_enfiler_trie(FIFO *file, t_processus *process)
+{
+    int isEmpty = fifo_vide(file);
+    if (isEmpty == -1)
+    {
+        printf("!!! Trying to queue on NULL Fifo !!!\n");
+        return;
+    }
+
+    t_processus *previous_elem = NULL;
+    // si la liste est vide, il n'y a pas de suivant, et on laisse current_elem à NULL pour savoir qu'on doit mettre à jour 'last'
+    t_processus *curent_elem = (isEmpty == 1) ? NULL : file->first;
+    // => donc si la liste était vide on se retrouve avec previous et current à NULL
+
+    // on essaie de récupérer l'élement dans lequel on doit remplacer l'attribut suivant.
+    // on garde en mémoire l'élément précédent, sur lequel on doit modifier le suivant pour pouvoir insérer le processus
+    // la boucle suivante s'arrête quand la fin de la liste est atteinte ou la durée de l'élément actuel est plus grande que celle de l'élément qu'on essaie d'insérer
+    while (curent_elem != NULL && curent_elem->duree <= process->duree)
+    {
+        previous_elem = curent_elem;
+        curent_elem = curent_elem->suivant;
+    }
+    //
+
+    // current_elem est NULL dans 2 cas:
+    // - la fin de la liste est atteinte
+    // - la liste était vide depuis le début
+    // => on met à jour 'last', parceque dans les instructions suivantes on va insérer à la fin de la liste ('previous_elem' sera le dernier élément de la liste et 'current_elem' sera NULL)
+    if (curent_elem == NULL)
+    {
+        file->last = process;
+    }
+
+    // si previous_elem est NULL, ça veut dire qu'on n'a pas itéré une seule fois dans le while au dessus (le previous_elem est mis à jour à chaque itération), ce qui donne de cas:
+    // - on a pas itéré parceque la liste était vide depuis le but
+    // - on a pas itéré paceque la durée du premier élément de la liste est déjà plus grande que celle du processus
+    // => on insère process en tête
+    if (previous_elem == NULL)
+    {
+        process->suivant = file->first;
+        file->first = process;
+    }
+    else
+    {
+        // si la condition précédente, on insère process après la liste après la tête :
+        // - soit à la fin
+        // - soit en plein millieu
+        // => dans tout les cas le même comportement est attendu
+        previous_elem->suivant = process;
+        process->suivant = curent_elem;
+    }
+
     file->size++;
 }
 
@@ -186,6 +262,7 @@ void fifo_print(FIFO *file)
         printf("pid | arrivee | duree\n");
         processus_print(file->first);
         printf("[====================]\n");
+        processus_print(file->last);
     }
     else
     {
@@ -195,8 +272,8 @@ void fifo_print(FIFO *file)
 
 int main()
 {
-    t_processus *open = processus_load("file", 3);
-    FIFO *fif = fifo_init_from_process(open);
+    t_processus *open = processus_load("file", 6);
+    FIFO *fif = fifo_init_sorted_from_process(open);
     fifo_print(fif);
 
     return 0;
