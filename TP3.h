@@ -129,7 +129,7 @@ void fifo_print(FIFO *queue);
  * @brief Indique si la fifo est triée par 'duree' (O de n).
  *
  * @param queue La FIFO à tester
- * @return 1 si elle est triée par 'duree' dans l'ordre croissant, 0 sinon
+ * @return 1 si elle est triée par 'duree' dans l'ordre croissant, 0 sinon (si elle est vide ou NULL aussi)
  */
 int fifo_is_sorted(FIFO *queue);
 
