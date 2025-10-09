@@ -23,21 +23,20 @@ t_processus *processus_init(int pid, int arrivee, int duree);
  *
  * @param p Le processus
  */
-void processus_free(t_processus *p);
+void processus_free(t_processus **process);
 /**
- * @brief Détruit le processus passé en pramètre, ansi que tous les processus suivants (O de n)
- *
+ * @brief Détruit le processus passé en pramètre, ansi que tous les processus suivants (O de n). Le pointeur vers le process est set à NULL après exécution
  * @param p Le processus
  */
-void processus_free_recursive(t_processus *p);
+void processus_free_recursive(t_processus *process);
 /**
- * @brief Charge une liste de processus depuis un fichier (O de n)
+ * @brief Charge une liste de processus depuis un fichier (O de n). Les lignes ne doivent pas faire plus de MAX_LINE_LENGTH chars.
  *
  * @param nom_fichier Le chemin vers le fichier
  * @param nb_processus Nombre de processus à charger dans le fichier
  * @return Le processus de tête
  */
-t_processus *processus_load(char *nom_fichier, int nb_processus);
+t_processus *processus_load(char *nom_fichier, int nb_process);
 /**
  * @brief Affiche un processus ligne par ligne dans le terminal (O de n)
  *
@@ -65,13 +64,13 @@ FIFO *fifo_init();
  *
  * @return Une FIFO peuplée des processus passés en paramètre
  */
-FIFO *fifo_init_from_process(t_processus *p);
+FIFO *fifo_init_from_process(t_processus *process);
 /**
- * @brief Détruit les processus de la FIFO récursivement, puis la FIFO en elle même (O de n)
- * @param p La FIFO
+ * @brief Détruit les processus de la FIFO récursivement, puis la FIFO en elle même (O de n). La Fifo est set à null après exécution
+ * @param p Un pointeur vers le pointeur de la FIFO, pour qu'on puisse set le pointeur de la Fifo à NULL
  *
  */
-void fifo_free(FIFO *file);
+void fifo_free(FIFO **file);
 /**
  * @brief Teste si la FIFO est vide (O de 1)
  * @param file La FIFO
@@ -85,7 +84,7 @@ int fifo_vide(FIFO *file);
  * @param p Le processus à ajouter
  *
  */
-void *fifo_enfiler(FIFO *file, t_processus *p);
+void *fifo_enfiler(FIFO *file, t_processus *process);
 /**
  * @brief Défile le premier élément de la FIFO (O de 1). La FIFO n'aura plus aucune trace du processus, et le processus suivant du processus dépilé est mis à NULL
  * @param file La FIFO
