@@ -7,6 +7,11 @@
 t_processus *processus_init(int pid, int arrivee, int duree)
 {
     t_processus *res = malloc(sizeof(t_processus));
+    if (!res)
+    {
+        // alloc failed
+        return NULL;
+    }
     res->pid = pid;
     res->arrivee = arrivee;
     res->duree = duree;
@@ -16,10 +21,15 @@ t_processus *processus_init(int pid, int arrivee, int duree)
 
 void processus_free(t_processus *p)
 {
+    free(p);
+}
+
+void processus_free_recursive(t_processus *p)
+{
     if (p != NULL)
     {
-        processus_free(p->suivant);
-        free(p);
+        processus_free_recursive(p->suivant);
+        processus_free(p);
     }
 }
 
@@ -37,6 +47,12 @@ t_processus *processus_load(char *nom_fichier, int nb_processus)
         sscanf(res_str, "%d %d %d", &pid, &arrive, &duree);
 
         t_processus *new = processus_init(pid, arrive, duree);
+        if (!new)
+        {
+            // alloc failed
+            fclose(file);
+            return NULL;
+        }
         if (res == NULL)
         {
             res = new;
@@ -59,11 +75,20 @@ void processus_print(t_processus *process)
         printf(" %d | %d | %d\n", process->pid, process->arrivee, process->duree);
         processus_print(process->suivant);
     }
+    else
+    {
+        printf("\n");
+    }
 }
 
 FIFO *fifo_init()
 {
     FIFO *res = malloc(sizeof(FIFO));
+    if (!res)
+    {
+        // alloc failed
+        return NULL;
+    }
     res->first = NULL;
     res->last = NULL;
     res->size = 0;
@@ -84,7 +109,7 @@ FIFO *fifo_init_from_process(t_processus *p)
 
 void fifo_free(FIFO *file)
 {
-    processus_free(file->first);
+    processus_free_recursive(file->first);
     free(file);
 }
 
@@ -93,9 +118,9 @@ int fifo_vide(FIFO *file)
     return file->size == 0 ? 1 : 0;
 }
 
-FIFO *fifo_enfiler(FIFO *file, t_processus *p)
+void *fifo_enfiler(FIFO *file, t_processus *p)
 {
-    if (fifo_vide(file))
+    if (fifo_vide(file) == 1)
     {
         file->first = p;
         file->last = p;
@@ -108,14 +133,46 @@ FIFO *fifo_enfiler(FIFO *file, t_processus *p)
     file->size++;
 }
 
+t_processus *fifo_defiler(FIFO *file)
+{
+    t_processus *res;
+    if (fifo_vide(file) == 1)
+    {
+        return NULL;
+    }
+    else
+    {
+        res = file->first;
+        file->first = file->first->suivant;
+        file->size--;
+        if (fifo_vide(file) == 0)
+        {
+            file->last == NULL;
+        }
+        return res;
+    }
+}
+
+void fifo_print(FIFO *file)
+{
+    printf("content from 'first': \n");
+    processus_print(file->first);
+    printf("content from 'last': \n");
+    processus_print(file->last);
+    printf("size: %d\n", file->size);
+}
+
 int main()
 {
     t_processus *open = processus_load("file", 3);
     FIFO *fif = fifo_init_from_process(open);
-    processus_print(fif->first);
-    printf("\n");
-    processus_print(fif->last);
-    printf("size: %d\n", fif->size);
+    fifo_print(fif);
+    fifo_defiler(fif);
+    fifo_print(fif);
+    fifo_defiler(fif);
+    fifo_print(fif);
+    fifo_defiler(fif);
+    fifo_print(fif);
 
     return 0;
 }
