@@ -46,7 +46,7 @@ void processus_free_recursive(t_processus *process);
  * @param nb_processes Nombre de processus à charger dans le fichier
  * @return Le processus de tête
  */
-t_processus *processus_load(char *nom_fichier, int nb_processes);
+t_processus *processus_load(char *nom_fichier, int *processes_loaded);
 
 /**
  * @brief Affiche un processus ligne par ligne dans le terminal (O de n)

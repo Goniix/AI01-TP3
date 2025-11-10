@@ -39,18 +39,19 @@ void processus_free_recursive(t_processus *process)
     }
 }
 
-t_processus *processus_load(char *nom_fichier, int nb_processes)
+t_processus *processus_load(char *nom_fichier, int *processes_loaded)
 {
     FILE *file = fopen(nom_fichier, "r");
     t_processus *head = NULL;
     t_processus *last = NULL;
-    for (int i = 0; i < nb_processes; i++)
+    (*processes_loaded) = 0;
+    while (1)
     {
         char line[MAX_LINE_LENGTH];                                    // une ligne ne doit pas faire plus de MAX_LINE_LENGTH char
         char *ret = fgets(line, sizeof(char) * MAX_LINE_LENGTH, file); // on lit la ligne brute
         if (ret == NULL)
         {
-            printf("!!! EOF reached, nb_process is too big !!!\n");
+            // printf("!!! EOF reached, nb_process is too big !!!\n");
             break;
         }
         int pid, arrive, duree;
@@ -72,6 +73,7 @@ t_processus *processus_load(char *nom_fichier, int nb_processes)
             last->suivant = new;
         }
         last = new;
+        (*processes_loaded)++;
     }
     fclose(file);
     return head;
