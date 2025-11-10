@@ -113,7 +113,7 @@ FIFO *fifo_init_from_process(t_processus *process)
     return res;
 }
 
-FIFO *fifo_init_sorted_from_process(t_processus *process)
+FIFO *fifo_init_sorted_from_process(t_processus *process, PROCESSFIELDS field)
 {
     if (!process)
     {
@@ -125,9 +125,9 @@ FIFO *fifo_init_sorted_from_process(t_processus *process)
 
     while (elem != NULL)
     {
-        // on garde la référence vers le prochain element, car 'fifo_enfiler_trie' modifie les process
+        // on garde la référence vers le prochain element, car 'fifo_add_sorted' modifie les process
         next_elem = elem->suivant;
-        fifo_add_sorted(res, elem);
+        fifo_add_sorted(res, elem, field);
         elem = next_elem;
     }
     return res;
@@ -177,7 +177,7 @@ void fifo_add(FIFO *queue, t_processus *process)
     queue->size++;
 }
 
-void fifo_add_sorted(FIFO *queue, t_processus *process)
+void fifo_add_sorted(FIFO *queue, t_processus *process, PROCESSFIELDS field)
 {
     int isEmpty = fifo_is_empty(queue);
     if (isEmpty == -1)
@@ -191,15 +191,39 @@ void fifo_add_sorted(FIFO *queue, t_processus *process)
     t_processus *curent_elem = (isEmpty == 1) ? NULL : queue->first;
     // => donc si la liste était vide on se retrouve avec previous et current à NULL
 
-    // on essaie de récupérer l'élement dans lequel on doit remplacer l'attribut suivant.
+    // on essaie de récupérer le process dans lequel on doit remplacer la référence vers le suivant, pour pouvoir insérer le process.
     // on garde en mémoire l'élément précédent, sur lequel on doit modifier le suivant pour pouvoir insérer le processus
-    // la boucle suivante s'arrête quand la fin de la liste est atteinte ou la durée de l'élément actuel est plus grande que celle de l'élément qu'on essaie d'insérer
-    while (curent_elem != NULL && curent_elem->duree <= process->duree)
+    // la boucle suivante s'arrête quand la fin de la liste est atteinte ou le champ de l'élément actuel est plus grand que celui de l'élément qu'on essaie d'insérer
+    switch (field)
     {
-        previous_elem = curent_elem;
-        curent_elem = curent_elem->suivant;
+    case PID:
+        while (curent_elem != NULL && curent_elem->pid <= process->pid)
+        {
+            previous_elem = curent_elem;
+            curent_elem = curent_elem->suivant;
+        }
+        break;
+
+    case ARRIVEE:
+        while (curent_elem != NULL && curent_elem->arrivee <= process->arrivee)
+        {
+            previous_elem = curent_elem;
+            curent_elem = curent_elem->suivant;
+        }
+        break;
+
+    case DUREE:
+        while (curent_elem != NULL && curent_elem->duree <= process->duree)
+        {
+            previous_elem = curent_elem;
+            curent_elem = curent_elem->suivant;
+        }
+        break;
+
+    default:
+        printf("!!! Given field is unknown !!!\n");
+        break;
     }
-    //
 
     // current_elem est NULL dans 2 cas:
     // - la fin de la liste est atteinte
@@ -275,7 +299,7 @@ void fifo_print(FIFO *queue)
     }
 }
 
-int fifo_is_sorted(FIFO *queue)
+int fifo_is_sorted(FIFO *queue, PROCESSFIELDS field)
 {
     int isEmpty = fifo_is_empty(queue);
     if (isEmpty == -1)
@@ -291,15 +315,55 @@ int fifo_is_sorted(FIFO *queue)
 
     t_processus *elem = queue->first;
     int local_max = -1;
-    while (elem != NULL)
+    switch (field)
     {
-        if (elem->duree < local_max)
-            return 0;
-        else
+    case PID:
+        while (elem != NULL)
         {
-            local_max = elem->duree;
-            elem = elem->suivant;
+
+            if (elem->pid < local_max)
+                return 0;
+            else
+            {
+                local_max = elem->pid;
+                elem = elem->suivant;
+            }
         }
+        break;
+        break;
+
+    case ARRIVEE:
+
+        while (elem != NULL)
+        {
+
+            if (elem->arrivee < local_max)
+                return 0;
+            else
+            {
+                local_max = elem->arrivee;
+                elem = elem->suivant;
+            }
+        }
+        break;
+
+    case DUREE:
+        while (elem != NULL)
+        {
+
+            if (elem->duree < local_max)
+                return 0;
+            else
+            {
+                local_max = elem->duree;
+                elem = elem->suivant;
+            }
+        }
+        break;
+
+    default:
+        printf("!!! Given field is unknown !!!\n");
+        break;
     }
 
     return 1;
@@ -311,15 +375,15 @@ int main()
     FIFO *fif = NULL;
 
     open = processus_load("file", 6);
-    fif = fifo_init_sorted_from_process(open);
+    fif = fifo_init_sorted_from_process(open, ARRIVEE);
     fifo_print(fif);
-    printf("%d\n", fifo_is_sorted(fif));
+    printf("%d\n", fifo_is_sorted(fif, ARRIVEE));
     fifo_free(&fif);
 
     open = processus_load("file", 6);
     fif = fifo_init_from_process(open);
     fifo_print(fif);
-    printf("%d\n", fifo_is_sorted(fif));
+    printf("%d\n", fifo_is_sorted(fif, PID));
     fifo_free(&fif);
 
     return 0;

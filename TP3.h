@@ -9,6 +9,13 @@ typedef struct s_processus
     struct s_processus *suivant; // pointeur vers le processus suivant
 } t_processus;
 
+typedef enum PROCESSFIELDS
+{
+    PID,
+    ARRIVEE,
+    DUREE
+} PROCESSFIELDS;
+
 /**
  * @brief Crée un process à partir des valeurs en paramètre (O de 1)
  *
@@ -72,12 +79,13 @@ FIFO *fifo_init();
 FIFO *fifo_init_from_process(t_processus *process);
 
 /**
- * @brief Initialise une FIFO à partir d'un processus, en triant les processus en fonction de leur durée (l'ordre des process est modifié). (O de n**2)
+ * @brief Initialise une FIFO à partir d'un processus, en triant les processus en fonction d'un field donné (l'ordre des process est modifié). (O de n**2)
  * @param process La tête du processus
+ * @param field Le field par lequel trier la FIFO
  *
  * @return Une FIFO triée peuplée des processus passés en paramètre
  */
-FIFO *fifo_init_sorted_from_process(t_processus *process);
+FIFO *fifo_init_sorted_from_process(t_processus *process, PROCESSFIELDS field);
 
 /**
  * @brief Détruit les processus de la FIFO récursivement, puis la FIFO en elle même (O de n). La Fifo est set à null après exécution
@@ -103,12 +111,13 @@ int fifo_is_empty(FIFO *queue);
 void fifo_add(FIFO *queue, t_processus *process);
 
 /**
- * @brief Ajoute un élément à la FIFO, de sorte à garder la FIFO triée. L'élément est inséré juste après les autres processus de même 'duree' que lui. Si on enfile une fifo uniquement avec cette fonction alors elle est triée! (O de n)
+ * @brief Ajoute un élément à la FIFO, de sorte à garder la FIFO triée. L'élément est inséré juste après les autres processus de même 'field' que lui. Si on enfile une fifo uniquement avec cette fonction alors elle est triée! (O de n)
  * @param queue La FIFO
  * @param process Le processus à ajouter (son 'suivant' est altéré!)
+ * @param field Le field par lequel trier la FIFO
  *
  */
-void fifo_add_sorted(FIFO *queue, t_processus *process);
+void fifo_add_sorted(FIFO *queue, t_processus *process, PROCESSFIELDS field);
 
 /**
  * @brief Défile le premier élément de la FIFO (O de 1). La FIFO n'aura plus aucune trace du processus, et le processus suivant du processus dépilé est mis à NULL
@@ -126,12 +135,13 @@ t_processus *fifo_unqueue(FIFO *queue);
 void fifo_print(FIFO *queue);
 
 /**
- * @brief Indique si la fifo est triée par 'duree' (O de n).
+ * @brief Indique si la fifo est triée par un field particulier (O de n).
  *
  * @param queue La FIFO à tester
+ * @param field Le field par lequel la FIFO devrait être triée
  * @return 1 si elle est triée par 'duree' dans l'ordre croissant, 0 sinon (si elle est vide ou NULL aussi)
  */
-int fifo_is_sorted(FIFO *queue);
+int fifo_is_sorted(FIFO *queue, PROCESSFIELDS field);
 
 // les deux vont être pareils, on devra de tout de façon parse toute la liste à la recherche des process à t == arrivee
 void simuler_fcfs(FIFO *tab, int nb_processes); // sauf que lui il est pas trié
