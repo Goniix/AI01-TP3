@@ -302,7 +302,6 @@ void fifo_print(FIFO *queue)
         printf("pid | arrivee | duree\n");
         processus_print(queue->first);
         printf("[====================]\n");
-        // processus_print(queue->last);
     }
     else
     {
@@ -342,10 +341,8 @@ int fifo_is_sorted(FIFO *queue, PROCESSFIELDS field)
             }
         }
         break;
-        break;
 
     case ARRIVEE:
-
         while (elem != NULL)
         {
 
