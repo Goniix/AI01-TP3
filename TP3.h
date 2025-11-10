@@ -27,9 +27,9 @@ typedef enum PROCESSFIELDS
 t_processus *processus_init(int pid, int arrivee, int duree);
 
 /**
- * @brief Détruit le processus passé en pramètre (O de 1)
+ * @brief Détruit le processus passé en pramètre. Le pointeur est également passé à NULL (O de 1)
  *
- * @param p Le processus
+ * @param p Un pointeur vers le pointeur de la fifo, pour pouvoir également détruire le pointeur de la fifo
  */
 void processus_free(t_processus **process);
 

@@ -140,8 +140,10 @@ FIFO *fifo_init_sorted_from_process(t_processus *process, PROCESSFIELDS field)
 
 void fifo_free(FIFO **queue)
 {
+    // on vérifie la validité du pointeur vers le pointeur de la fifo, ainsi que la validité du poointeur de la fifo
     if (queue && *queue)
     {
+        // on free les process de la fifo, la fifo et on détruit le pointeur
         processus_free_recursive((*queue)->first);
         free(*queue);
         *queue = NULL;
@@ -171,11 +173,13 @@ void fifo_add(FIFO *queue, t_processus *process)
     }
     if (isEmpty == 1)
     {
+        // si la fifo est vide, l'élément ajouté devient le premier et le dernier
         queue->first = process;
         queue->last = process;
     }
     else
     {
+        // si elle contient déjà des éléments, on ajoute l'élément à la fin
         queue->last->suivant = process;
         queue->last = process;
     }
@@ -276,9 +280,11 @@ t_processus *fifo_unqueue(FIFO *queue)
         printf("!!! Trying to unqueue from an empty Fifo !!!\n");
         return NULL;
     }
-
+    // on retourne le premier process
     res = queue->first;
+    // on modifie les références pour oublier le premier élément
     queue->first = queue->first->suivant;
+    // on met à jour les infos secondaires de la liste
     queue->size--;
     if (isEmpty)
     {
@@ -318,6 +324,7 @@ int fifo_is_sorted(FIFO *queue, PROCESSFIELDS field)
         return 0;
     }
 
+    // on parse la liste à la recherche d'un élément dont le field donné est plus petit que celui des éléments précédents
     t_processus *elem = queue->first;
     int local_max = -1;
     switch (field)
@@ -388,6 +395,7 @@ void simuler_fcfs(FIFO *tab, int nb_processes)
     printf("=== Simulation FCFS ===\n");
     while (fifo_is_empty(sortedArrival) == 0 || fifo_is_empty(ready) == 0)
     {
+        // si un process est en cours, on l'avance
         if (remainingProcessTime > 0)
         {
             remainingProcessTime--;
@@ -399,6 +407,7 @@ void simuler_fcfs(FIFO *tab, int nb_processes)
             fifo_unqueue(ready);
         }
 
+        // on ajoute les process qui arrivent à l'instant t aux process en attente
         while (fifo_is_empty(sortedArrival) == 0 && sortedArrival->first->arrivee == t)
         {
             t_processus *arriving = fifo_unqueue(sortedArrival);
@@ -407,6 +416,7 @@ void simuler_fcfs(FIFO *tab, int nb_processes)
             printf("t=%d : arrivee P%d (duree=%d)\n", t, arriving->pid, arriving->duree);
         }
 
+        // on execute le prochain process si le systeme est libre
         if (fifo_is_empty(ready) == 0 && remainingProcessTime == 0)
         {
 
