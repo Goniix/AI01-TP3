@@ -381,7 +381,7 @@ int fifo_is_sorted(FIFO *queue, PROCESSFIELDS field)
     return 1;
 }
 
-void simuler_fcfs(FIFO *tab, int nb_processes)
+void simuler_fcfs(FIFO *tab)
 {
     // on trie tab par arrivée, donc il ne faut pas s'en resservir après
     FIFO *sortedArrival = fifo_init_sorted_from_process(tab->first, ARRIVEE);
@@ -428,6 +428,53 @@ void simuler_fcfs(FIFO *tab, int nb_processes)
     }
 }
 
+void simuler_sjf(FIFO *tab)
+{
+    // on trie tab par arrivée, donc il ne faut pas s'en resservir après
+    FIFO *sortedArrival = fifo_init_sorted_from_process(tab->first, ARRIVEE);
+    // la liste des éléments à traiter.
+    // - le premier élément est l'élément en cours de traitement
+    FIFO *ready = fifo_init();
+
+    int t = 0;
+    int remainingProcessTime = 0;
+
+    printf("=== Simulation SJF ===\n");
+    while (fifo_is_empty(sortedArrival) == 0 || fifo_is_empty(ready) == 0)
+    {
+        // si un process est en cours, on l'avance
+        if (remainingProcessTime > 0)
+        {
+            remainingProcessTime--;
+        }
+        // si le traitement du premier élément est terminé, le dépiler
+        if (fifo_is_empty(ready) == 0 && remainingProcessTime == 0)
+        {
+            printf("t=%d : fin P%d\n", t, ready->first->pid);
+            fifo_unqueue(ready);
+        }
+
+        // on ajoute les process qui arrivent à l'instant t aux process en attente, en les triant par durée ascendante
+        while (fifo_is_empty(sortedArrival) == 0 && sortedArrival->first->arrivee == t)
+        {
+            t_processus *arriving = fifo_unqueue(sortedArrival);
+            fifo_add_sorted(ready, arriving, DUREE);
+
+            printf("t=%d : arrivee P%d (duree=%d)\n", t, arriving->pid, arriving->duree);
+        }
+
+        // on execute le prochain process si le systeme est libre
+        if (fifo_is_empty(ready) == 0 && remainingProcessTime == 0)
+        {
+
+            remainingProcessTime = ready->first->duree;
+            printf("t=%d : run P%d (duree=%d)\n", t, ready->first->pid, ready->first->duree);
+        }
+
+        t++;
+    }
+}
+
 int main()
 {
     t_processus *open = NULL;
@@ -442,7 +489,7 @@ int main()
     open = processus_load("file_simple", 3);
     fif = fifo_init_from_process(open);
     fifo_print(fif);
-    simuler_fcfs(fif, 6);
+    simuler_fcfs(fif);
 
     fifo_free(&fif);
 

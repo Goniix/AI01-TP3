@@ -144,7 +144,17 @@ void fifo_print(FIFO *queue);
 int fifo_is_sorted(FIFO *queue, PROCESSFIELDS field);
 
 // les deux vont être pareils, on devra de tout de façon parse toute la liste à la recherche des process à t == arrivee
-void simuler_fcfs(FIFO *tab, int nb_processes); // sauf que lui il est pas trié
-void simuler_sjf(FIFO *tab, int nb_processes);  // et lui si
+/**
+ * @brief Simule le fonctionnement d'un ordonanceur FCFS, les process sont exécutés dans l'odre où ils arrivent
+ *
+ * @param tab La FIFO contenant les processes (MODIFIEE)
+ */
+void simuler_fcfs(FIFO *tab);
+/**
+ * @brief Simule le fonctionnement d'un ordonanceur SJF, les process sont exécutés en privilégiant les processus à la durée plus courte
+ *
+ * @param tab La FIFO contenant les processes (MODIFIEE)
+ */
+void simuler_sjf(FIFO *tab);
 
 #endif
