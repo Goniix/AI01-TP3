@@ -46,8 +46,13 @@ t_processus *processus_load(char *nom_fichier, int nb_processes)
     t_processus *last = NULL;
     for (int i = 0; i < nb_processes; i++)
     {
-        char line[MAX_LINE_LENGTH];      // une ligne ne doit pas faire plus de MAX_LINE_LENGTH char
-        fgets(line, sizeof(line), file); // on lit la ligne brute
+        char line[MAX_LINE_LENGTH];                                    // une ligne ne doit pas faire plus de MAX_LINE_LENGTH char
+        char *ret = fgets(line, sizeof(char) * MAX_LINE_LENGTH, file); // on lit la ligne brute
+        if (ret == NULL)
+        {
+            printf("!!! EOF reached, nb_process is too big !!!\n");
+            break;
+        }
         int pid, arrive, duree;
         sscanf(line, "%d %d %d", &pid, &arrive, &duree); // extraction des valeurs
 
@@ -369,21 +374,66 @@ int fifo_is_sorted(FIFO *queue, PROCESSFIELDS field)
     return 1;
 }
 
+void simuler_fcfs(FIFO *tab, int nb_processes)
+{
+    // on trie tab par arrivée, donc il ne faut pas s'en resservir après
+    FIFO *sortedArrival = fifo_init_sorted_from_process(tab->first, ARRIVEE);
+    // la liste des éléments à traiter.
+    // - le premier élément est l'élément en cours de traitement
+    FIFO *ready = fifo_init();
+
+    int t = 0;
+    int remainingProcessTime = 0;
+
+    printf("=== Simulation FCFS ===\n");
+    while (fifo_is_empty(sortedArrival) == 0 || fifo_is_empty(ready) == 0)
+    {
+        if (remainingProcessTime > 0)
+        {
+            remainingProcessTime--;
+        }
+        // si le traitement du premier élément est terminé, le dépiler
+        if (fifo_is_empty(ready) == 0 && remainingProcessTime == 0)
+        {
+            printf("t=%d : fin P%d\n", t, ready->first->pid);
+            fifo_unqueue(ready);
+        }
+
+        while (fifo_is_empty(sortedArrival) == 0 && sortedArrival->first->arrivee == t)
+        {
+            t_processus *arriving = fifo_unqueue(sortedArrival);
+            fifo_add(ready, arriving);
+
+            printf("t=%d : arrivee P%d (duree=%d)\n", t, arriving->pid, arriving->duree);
+        }
+
+        if (fifo_is_empty(ready) == 0 && remainingProcessTime == 0)
+        {
+
+            remainingProcessTime = ready->first->duree;
+            printf("t=%d : run P%d (duree=%d)\n", t, ready->first->pid, ready->first->duree);
+        }
+
+        t++;
+    }
+}
+
 int main()
 {
     t_processus *open = NULL;
     FIFO *fif = NULL;
 
-    open = processus_load("file", 6);
+    open = processus_load("file_simple", 3);
     fif = fifo_init_sorted_from_process(open, ARRIVEE);
     fifo_print(fif);
     printf("%d\n", fifo_is_sorted(fif, ARRIVEE));
     fifo_free(&fif);
 
-    open = processus_load("file", 6);
+    open = processus_load("file_simple", 3);
     fif = fifo_init_from_process(open);
     fifo_print(fif);
-    printf("%d\n", fifo_is_sorted(fif, PID));
+    simuler_fcfs(fif, 6);
+
     fifo_free(&fif);
 
     return 0;

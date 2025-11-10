@@ -80,7 +80,7 @@ FIFO *fifo_init_from_process(t_processus *process);
 
 /**
  * @brief Initialise une FIFO à partir d'un processus, en triant les processus en fonction d'un field donné (l'ordre des process est modifié). (O de n**2)
- * @param process La tête du processus
+ * @param process La tête du processus (L'ORDRE EST MODIFIE NE PAS REUTILISER APRES)
  * @param field Le field par lequel trier la FIFO
  *
  * @return Une FIFO triée peuplée des processus passés en paramètre
@@ -98,7 +98,7 @@ void fifo_free(FIFO **queue);
  * @brief Teste si la FIFO est vide (O de 1)
  * @param queue La FIFO
  *
- * @return 1 si elle ets vide, 0 sinon
+ * @return 1 si elle est vide, 0 sinon
  */
 int fifo_is_empty(FIFO *queue);
 
