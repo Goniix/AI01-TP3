@@ -83,7 +83,6 @@ void processus_print(t_processus *process)
 {
     if (process)
     {
-
         printf(" %2d | %7d | %5d\n", process->pid, process->arrivee, process->duree);
         processus_print(process->suivant);
     }
@@ -270,21 +269,20 @@ void fifo_add_sorted(FIFO *queue, t_processus *process, PROCESSFIELDS field)
 t_processus *fifo_unqueue(FIFO *queue)
 {
     int isEmpty = fifo_is_empty(queue);
-    t_processus *res;
     if (isEmpty == -1)
     {
         printf("!!! Trying to unqueue from NULL Fifo !!!\n");
         return NULL;
     }
-
     if (isEmpty)
     {
         printf("!!! Trying to unqueue from an empty Fifo !!!\n");
         return NULL;
     }
+    t_processus *res;
     // on retourne le premier process
     res = queue->first;
-    // on modifie les références pour oublier le premier élément
+    // on modifie les références pour l'oublier
     queue->first = queue->first->suivant;
     // on met à jour les infos secondaires de la liste
     queue->size--;

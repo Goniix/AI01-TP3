@@ -43,8 +43,8 @@ void processus_free_recursive(t_processus *process);
  * @brief Charge une liste de processus depuis un fichier (O de n). Les lignes ne doivent pas faire plus de MAX_LINE_LENGTH chars.
  *
  * @param nom_fichier Le chemin vers le fichier
- * @param nb_processes Nombre de processus à charger dans le fichier
- * @return Le processus de tête
+ * @param processes_loaded OUT Nombre de processus effectivement chargés
+ * @return Le processus de tête de la liste chainée de processus
  */
 t_processus *processus_load(char *nom_fichier, int *processes_loaded);
 
