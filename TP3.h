@@ -98,9 +98,9 @@ void fifo_free(FIFO **queue);
  * @brief Teste si la FIFO est vide (O de 1)
  * @param queue La FIFO
  *
- * @return 1 si elle est vide, 0 sinon
+ * @return true si elle est vide, false sinon
  */
-int fifo_is_empty(FIFO *queue);
+bool fifo_is_empty(FIFO *queue);
 
 /**
  * @brief Ajoute un élément à la fin de la FIFO (O de 1)
@@ -115,9 +115,10 @@ void fifo_add(FIFO *queue, t_processus *process);
  * @param queue La FIFO
  * @param process Le processus à ajouter (son 'suivant' est altéré!)
  * @param field Le field par lequel trier la FIFO
+ * @param ignore_first_n_index Le nombre d'éléments à ignorer lors du tri au début de la liste (laisser à 0 pour tout trier)
  *
  */
-void fifo_add_sorted(FIFO *queue, t_processus *process, PROCESSFIELDS field);
+void fifo_add_sorted(FIFO *queue, t_processus *process, PROCESSFIELDS field, int ignore_first_n_index);
 
 /**
  * @brief Défile le premier élément de la FIFO (O de 1). La FIFO n'aura plus aucune trace du processus, et le processus suivant du processus dépilé est mis à NULL
@@ -139,17 +140,17 @@ void fifo_print(FIFO *queue);
  *
  * @param queue La FIFO à tester
  * @param field Le field par lequel la FIFO devrait être triée
- * @return 1 si elle est triée par 'duree' dans l'ordre croissant, 0 sinon (si elle est vide ou NULL aussi)
+ * @return true si elle est triée par 'duree' dans l'ordre croissant, false sinon (si elle est vide ou NULL aussi)
  */
-int fifo_is_sorted(FIFO *queue, PROCESSFIELDS field);
+bool fifo_is_sorted(FIFO *queue, PROCESSFIELDS field);
 
-// les deux vont être pareils, on devra de tout de façon parse toute la liste à la recherche des process à t == arrivee
 /**
  * @brief Simule le fonctionnement d'un ordonanceur FCFS, les process sont exécutés dans l'odre où ils arrivent
  *
  * @param tab La FIFO contenant les processes (MODIFIEE)
  */
 void simuler_fcfs(FIFO *tab);
+
 /**
  * @brief Simule le fonctionnement d'un ordonanceur SJF, les process sont exécutés en privilégiant les processus à la durée plus courte
  *
