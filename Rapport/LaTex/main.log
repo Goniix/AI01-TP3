@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.10.11)  29 OCT 2025 20:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025/Homebrew) (preloaded format=pdflatex 2025.10.11)  20 NOV 2025 17:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/Users/maximegamondele/Documents/ecole/COURS/UTC/GI01/CS/AI01/TP/TP_note/rendu_PDF/latex-rapport-UTC/main.tex
-(/Users/maximegamondele/Documents/ecole/COURS/UTC/GI01/CS/AI01/TP/TP_note/rendu_PDF/latex-rapport-UTC/main.tex
+**/Users/maximegamondele/Documents/ecole/COURS/UTC/GI01/CS/AI01/TP/TP_gonix/AI01-TP3/Rapport/LaTex/main.tex
+(/Users/maximegamondele/Documents/ecole/COURS/UTC/GI01/CS/AI01/TP/TP_gonix/AI01-TP3/Rapport/LaTex/main.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (./report-UTC.cls
@@ -945,7 +945,7 @@ Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
 )
 Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 )) (./src/titlePage.tex
-<./Graphismes-UTC/logos/UTC/logo_UTC.pdf, id=39, 362.78539pt x 91.54199pt>
+<./Graphismes-UTC/logos/UTC/logo_UTC.pdf, id=63, 362.78539pt x 91.54199pt>
 File: ./Graphismes-UTC/logos/UTC/logo_UTC.pdf Graphic file (type pdf)
 <use ./Graphismes-UTC/logos/UTC/logo_UTC.pdf>
 Package pdftex.def Info: ./Graphismes-UTC/logos/UTC/logo_UTC.pdf  used on input line 6.
@@ -955,33 +955,33 @@ Package pdftex.def Info: ./Graphismes-UTC/logos/UTC/logo_UTC.pdf  used on input 
 [0
 
 {/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}{/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc} <./Graphismes-UTC/logos/UTC/logo_UTC.pdf>]) (./main.toc
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 4.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 3.
  (/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 4.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 3.
  (/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 4.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 3.
  (/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 4.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 3.
  (/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 4.
+(Font)              <12> on input line 3.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 4.
+(Font)              <8> on input line 3.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 4.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 4.
+(Font)              <6> on input line 3.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 3.
  (/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 4.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 3.
  (/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ))
@@ -998,63 +998,59 @@ l.23 \newpage
               [0
 
 ] (./src/content.tex
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 6.
+ (/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
 
-<./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf, id=63, 88.1393pt x 68.00406pt>
+<./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf, id=93, 88.1393pt x 68.00406pt>
 File: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf Graphic file (type pdf)
 <use ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf>
-Package pdftex.def Info: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf  used on input line 11.
+Package pdftex.def Info: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf  used on input line 70.
 (pdftex.def)             Requested size: 36.87703pt x 28.45274pt.
-[1 <./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf>]
-<src/../images/fifo.png, id=71, 598.235pt x 142.5325pt>
-File: src/../images/fifo.png Graphic file (type png)
-<use src/../images/fifo.png>
-Package pdftex.def Info: src/../images/fifo.png  used on input line 21.
-(pdftex.def)             Requested size: 227.62204pt x 54.2325pt.
+[1{/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc} <./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf>]
+Overfull \hbox (32.58116pt too wide) in paragraph at lines 103--103
+[]\T1/lmtt/m/n/12 FIFO *fifo_init_sorted_from_process(t_processus *process, PROCESSFIELDS field);[] 
+ []
 
-
-File: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf Graphic file (type pdf)
-<use ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf>
-Package pdftex.def Info: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf  used on input line 32.
-(pdftex.def)             Requested size: 36.87703pt x 28.45274pt.
-[2 <./src/../images/fifo.png>]
-<src/../images/lst_trie.png, id=79, 756.8275pt x 201.75375pt>
-File: src/../images/lst_trie.png Graphic file (type png)
-<use src/../images/lst_trie.png>
-Package pdftex.def Info: src/../images/lst_trie.png  used on input line 43.
-(pdftex.def)             Requested size: 227.62204pt x 60.67743pt.
 
 
 File: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf Graphic file (type pdf)
 <use ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf>
-Package pdftex.def Info: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf  used on input line 51.
+Package pdftex.def Info: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf  used on input line 127.
 (pdftex.def)             Requested size: 36.87703pt x 28.45274pt.
-[3 <./src/../images/lst_trie.png>])
+[2]
+Overfull \hbox (20.23116pt too wide) in paragraph at lines 140--140
+[]\T1/lmtt/m/n/12 void fifo_add_sorted(FIFO *queue, t_processus *process, PROCESSFIELDS field);[] 
+ []
+
+)
 
 File: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf Graphic file (type pdf)
 <use ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf>
 Package pdftex.def Info: ./Graphismes-UTC/logos/sigle_UTC/sigle_UTC.pdf  used on input line 29.
 (pdftex.def)             Requested size: 36.87703pt x 28.45274pt.
-[4] (./main.aux)
+[3] (./main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 7B0647D72A71587B513234EA22B89FB0;1073.
+(rerunfilecheck)             Checksum: FDA878A0818011D474F8414F12D3615A;1734.
  ) 
 Here is how much of TeX's memory you used:
- 31124 strings out of 473190
- 621070 string characters out of 5704334
- 1111001 words of memory out of 5000000
- 53808 multiletter control sequences out of 15000+600000
- 601891 words of font info for 65 fonts, out of 8000000 for 9000
+ 31154 strings out of 473190
+ 621492 string characters out of 5704334
+ 1113898 words of memory out of 5000000
+ 53835 multiletter control sequences out of 15000+600000
+ 608206 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 114i,15n,115p,714b,624s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb></opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmr12.pfb></opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmr17.pfb>
-Output written on main.pdf (6 pages, 287037 bytes).
+ 114i,16n,115p,620b,765s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb></opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmr12.pfb></opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmr17.pfb></opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
+Output written on main.pdf (5 pages, 166375 bytes).
 PDF statistics:
- 116 PDF objects out of 1000 (max. 8388607)
- 93 compressed objects within 1 object stream
- 17 named destinations out of 1000 (max. 500000)
- 97 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 146 PDF objects out of 1000 (max. 8388607)
+ 123 compressed objects within 2 object streams
+ 20 named destinations out of 1000 (max. 500000)
+ 135 words of extra memory for PDF output out of 10000 (max. 10000000)
 

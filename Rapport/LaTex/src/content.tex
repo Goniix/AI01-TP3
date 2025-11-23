@@ -1,56 +1,189 @@
-\section{Introduction}
+\section{Modifications du schéma}
 
-L’ordonnancement des processus est une composante essentielle des systèmes d’exploitation, car il détermine la manière dont les processus se partagent le processeur. Selon la politique choisie, l’objectif peut être de maximiser l’efficacité, d’assurer une certaine équité ou encore de réduire le temps d’attente des tâches.
+Nous avons opéré plusieurs modifications au schéma fourni dans le sujet :
 
-Les listes chaînées sont des structures qui permettent de stocker et de manipuler facilement des processus, que ce soit sous la forme d’une file FIFO, d’une pile LIFO, d’une liste triée, ou encore d’autres types de structures.
+\begin{itemize}
+    \item Introduction d'une structure \texttt{FIFO} englobant les \texttt{processus}.
+    \item Toutes les fonctions ont été renommées pour améliorer notre compréhension.
+\end{itemize}
 
-La première politique étudiée est le FCFS (First Come, First Served), où les processus sont exécutés dans l’ordre d’arrivée. Pour la simuler, une file FIFO est utilisée, permettant d’ajouter les processus à la fin de la file et de les retirer au début. La seconde politique est le SJF (Shortest Job First), où les processus les plus courts sont traités en priorité. Dans ce cas, une liste triée est utilisée afin d’insérer chaque processus à la position correcte, garantissant que les durées restent classées dans l’ordre croissant.
+\subsection{Fonctions Processus}
 
-L’objectif de ce TP est ainsi de comprendre le fonctionnement et la manipulation des listes chaînées tout en observant l’impact concret de chaque politique sur l’exécution des processus.
+\subsubsection{Init et Free}
 
-\newpage
+Les fonctions suivantes :
 
-\section{First Come, First Served}
-\subsection{Introduction}
+\begin{verbatim}
+t_processus* creer_processus(int pid, int arrivee, int duree);
+void free_processus(t_processus* p);
+\end{verbatim}
 
-L’ordonnancement FCFS (First Come, First Served) exécute les processus selon leur ordre d’arrivée. Ceux-ci sont stockés dans une file d’attente de type FIFO (First In, First Out), où le premier processus inséré est également le premier retiré.
-L’implémentation utilise cette structure pour gérer simplement la succession des exécutions. Chaque processus terminé libère la place au suivant dans la file.
-Ci dessous un schéma représentant la file FIFO (cf. Figure~\ref{fig:fcfs_fifo}).
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=8cm]{../images/fifo.png}
-    \caption{Structure de la file FIFO pour FCFS}
-    \label{fig:fcfs_fifo}
-\end{figure}
+deviennent :
 
-\subsection{Résultats et analyse}
+\begin{verbatim}
+t_processus *processus_init(int pid, int arrivee, int duree);
+void processus_free(t_processus **process);
+void processus_free_recursive(t_processus *process);
+\end{verbatim}
 
-Après avoir implémenté la politique FCFS à l'aide d'une file FIFO, nous avons observé les résultats suivants :
-De plus, nous avons analysé les performances de cette politique en termes de compléxité. Ici pour notre algorithme FCFS, la compléxité est de O(n) car chaque processus doit être ajouté et retiré de la file une seule fois.
+\noindent
+La fonction \texttt{processus\_free} reçoit désormais un \texttt{t\_processus **} 
+afin de libérer la mémoire puis de mettre le pointeur à \texttt{NULL}. 
+Une fonction \texttt{processus\_free\_recursive} a été ajoutée pour 
+libérer toute une chaîne de processus.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Load}
+
+La fonction :
+
+\begin{verbatim}
+t_processus* charger_processus(char* nom_fichier, int* nb_processus);
+\end{verbatim}
+
+devient :
+
+\begin{verbatim}
+t_processus *processus_load(char *nom_fichier, int *processes_loaded);
+\end{verbatim}
+
+Elle lit des lignes jusqu'à la fin du fichier et retourne dans \texttt{processes\_loaded} le nombre total de processus chargés.
+
+\subsection{Fonctions Bonus}
+
+\begin{verbatim}
+void processus_print(t_processus *process);
+\end{verbatim}
+
+Affiche une chaîne de processus de manière formatée.
+
+\section{Fonctions FIFO}
+
+\subsection{Structures}
+
+\begin{verbatim}
+typedef struct s_FIFO
+{
+    t_processus *first;
+    t_processus *last;
+    int size;
+} FIFO;
+\end{verbatim}
+
+Cette structure encapsule une chaîne de processus, permettant un coût d’enfilage et de défilage en O(1).
+
+\begin{verbatim}
+typedef enum PROCESSFIELDS
+{
+    PID,
+    ARRIVEE,
+    DUREE
+} PROCESSFIELDS;
+\end{verbatim}
+
+On ajoute une énumération représentant les attributs d’un \texttt{t\_processus}.
+La fonction sera utilisée dans les fonctions de tris pour pouvoir undiquer l'attribut 
+en fonction duquel on trie les processus. %%% explain
+
+\subsection{Init et Clear}
+
+Les fonctions :
+
+\begin{verbatim}
+t_processus* fifo_init ();
+t_processus* fifo_clear (t_processus* file);
+\end{verbatim}
+
+deviennent :
+
+\begin{verbatim}
+FIFO *fifo_init();
+FIFO *fifo_init_from_process(t_processus *process);
+FIFO *fifo_init_sorted_from_process(t_processus *process, PROCESSFIELDS field);
+void fifo_free(FIFO **queue);
+\end{verbatim}
+
+Deux fonctions permettent d'initialiser une FIFO à partir d’une chaîne de processus 
+existante : 
+l'une conserve l’ordre initial, 
+l'autre trie selon un  donné \texttt{PROCESSFIELDS field}. 
+
+\texttt{fifo\_free} reçoit un \texttt{FIFO **} pour mettre le 
+pointeur à \texttt{NULL}.
+
+\subsection{Taille}
+
+\begin{verbatim}
+int fifo_vide (t_processus* file);
+\end{verbatim}
+
+devient :
+
+\begin{verbatim}
+int fifo_is_empty(FIFO *queue);
+\end{verbatim}
+
+Cette vérification devient triviale grâce à la structure FIFO.
+
+\subsection{Empilage et dépilage}
+
+\begin{verbatim}
+t_processus* fifo_enfiler (t_processus* file, t_processus* p);
+t_processus* fifo_defiler (t_processus** file);
+\end{verbatim}
+
+deviennent :
+
+\begin{verbatim}
+void fifo_add(FIFO *queue, t_processus *process);
+void fifo_add_sorted(FIFO *queue, t_processus *process, PROCESSFIELDS field);
+t_processus *fifo_unqueue(FIFO *queue);
+\end{verbatim}
+
+On choisi de réutiliser les FIFO dans l'implémentation de listes triées, 
+ce qui veut dire que si on insère une chaine de processus dans une FIFO 
+en utilisant uniquement la fonction \texttt{fifo\_add\_sorted} avec le même
+ \texttt{PROCESSFIELDS field}, on se retrouve avec une FIFO triée par l'attribut 
+spécifié dans \texttt{field}.
+Nous n'avons pas implémenté de tri 'descendant', 
+car il n'est pas utilisé dans le sujet 
+(donc lorsque référence est faite à une liste triée, 
+cette liste est triée de manière 'ascendante')
 
 
-\section{Shortest Job First}
-\subsection{Introduction}
-L’ordonnancement SJF (Shortest Job First) exécute en priorité les processus dont la durée d’exécution est la plus courte. Les processus sont organisés dans une liste triée en fonction de leur temps d’exécution, ce qui permet de sélectionner en premier celui dont la charge est minimale.
-L’implémentation repose sur cette structure ordonnée qui facilite la recherche du processus le plus court à chaque étape. Une fois un processus terminé, le suivant le plus court est choisi automatiquement.
-Ci-dessous (cf. Figure~\ref{fig:lst_trie}) un schéma illustrant la liste triée utilisée pour cet ordonnancement.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=8cm]{../images/lst_trie.png}
-    \caption{Structure de la file FIFO pour FCFS}
-    \label{fig:lst_trie}
-\end{figure}
 
-\subsection{Résultats et analyse}
+\subsection{Fonctions Bonus}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{verbatim}
+void fifo_print(FIFO *queue);
+int fifo_is_sorted(FIFO *queue, PROCESSFIELDS field);
+\end{verbatim}
 
-\section{Conclusion}
+On ajoute une manière de pouvoir visualiser les FIFO de manière formatée
+On ajoute également une fonction pour vérifier si une liste est triée selon un attribut \texttt{PROCESSFIELDS field} particulier.
 
-Dans ce TP, nous avons 
+\section{Fonctions de simulation}
+
+\begin{verbatim}
+void simuler_fcfs(t_processus* tableau, int nb_processus);
+void simuler_sjf(t_processus* tableau, int nb_processus);
+\end{verbatim}
+
+deviennent :
+
+\begin{verbatim}
+void simuler_fcfs(FIFO *tab);
+void simuler_sjf(FIFO *tab);
+\end{verbatim}
+
+Grâce à la FIFO, il n’est plus nécessaire de fournir le nombre de processus : la taille est stockée dans la structure.
+
+\subsection{FCFS}
+\begin{verbatim}
+void simuler_fcfs(FIFO *tab);
+\end{verbatim}
+
+\subsection{SJF}
+
+\begin{verbatim}
+void simuler_sjf(FIFO *tab);
+\end{verbatim}
