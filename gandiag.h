@@ -1,61 +1,27 @@
 #include "TP3.h"
+#include "TP3.h"
 
 #ifndef GANDIAG_H
 #define GANDIAG_H
 
 #define SECTION_MAX_SIZE 2000
 
-typedef struct s_gandiag
+typedef struct s_gd_timestep
 {
-    char *title;
-    gd_section *section_list;
-    int section_count;
+    int t;
+    int *arrivals;
+    int n_arrival;
+    int current_process;
 
-} gd;
+    gd_timestep *next;
 
-typedef struct s_gd_section
-{
-    char *name;
-    char content[SECTION_MAX_SIZE];
+} gd_timestep;
 
-} gd_section;
+gd_timestep *init_timestep(int t, int *arrival, int arrival_count, int current_process);
 
-/**
- * @brief Creates a Gantt diagram structure
- * @param title The diagram title
- * @returns Initialized Gantt diagram
- */
-gd *gdg_init(char *title);
+void add_timestep(gd_timestep *current, gd_timestep *new);
 
-int gdg_section_index(gd *diag, char *section_name);
+void free_timestep(gd_timestep **stepaddr);
 
-/**
- * @brief Inserts a new section into a Gantt diagram.
- * @param diag The diagram into which insert the section
- * @param section_name Name given to the newly created section. It is later used to insert processes into the section
- * @returns 1 if success, 0 if section already exists
- */
-int gdg_insert_section(gd *diag, char *section_name);
-
-/**
- * @brief Inserts a process into a Gantt diagram. Process data is append to 'content'.
- * @param diag The diagram into which insert the process.
- * @param section_name Name of the section the process will be inserted into.
- * @param process Inserted process.
- * @returns 1 if success, 0 if section is not found, -1 if section is full.
- */
-int gdg_insert_process(gd *diag, char *section_name, t_processus *process);
-
-/**
- * @brief Prints mermaid code of the diagram to the terminal
- * @param diag The printed diagram
- */
-void gdg_print_mermaid(gd *diag);
-
-/**
- * @brief Destroys a diagram
- * @param diag The destroyed diagram
- */
-void gdg_free(gd *diag);
-
+void print_timestep(gd_timestep *step);
 #endif

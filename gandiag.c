@@ -1,69 +1,74 @@
-#include <stdio.h>
+#include <gandiag.h>
 #include <stdlib.h>
-#include <string.h>
-#include "gandiag.h"
+#include <stdio.h>
 
-gd *gdg_init(char *title)
+gd_timestep *init_timestep(int t, int *arrival, int arrival_count, int current_process)
 {
-    gd *res = malloc(sizeof(gd));
-    res->section_list = NULL;
-    res->section_count = 0;
-    res->title = title;
+    gd_timestep *res = malloc(sizeof(gd_timestep));
+    res->t = t;
+    res->current_process = current_process;
+    res->arrivals = arrival;
+    res->n_arrival = arrival_count;
+    res->next = NULL;
     return res;
 }
 
-int gdg_section_index(gd *diag, char *section_name)
+void add_timestep(gd_timestep *current, gd_timestep *new)
 {
-    for (int i = 0; i < diag->section_count; i++)
-    {
-        if (strcmp(diag->section_list[i].name, section_name) == 1)
-            return i;
-    }
-    return -1;
+    current->next = new;
 }
 
-int gdg_insert_section(gd *diag, char *section_name)
+void free_timestep(gd_timestep **stepaddr)
 {
-    if (gdg_section_index(diag, section_name) != -1)
-        return 0;
-
-    gd_section *sect = malloc(sizeof(gd_section));
-    sect->name = section_name;
-    return 1;
+    rescurs_free_timestep(*stepaddr);
+    *stepaddr = NULL;
 }
 
-int gdg_insert_process(gd *diag, char *section_name, t_processus *process)
+void rescurs_free_timestep(gd_timestep *step)
 {
-    int section_index = gdg_section_index(diag, section_name);
-    if (section_index != -1)
+    if (step != NULL)
     {
-        char *mermaid_code;
-        sprintf(mermaid_code, "PID: %d    : %d, %dy\n", process->pid, process->arrivee, process->duree);
-        strcat(&diag->section_list[section_index], mermaid_code);
-    }
-    return 0;
-}
-
-void gdg_print_mermaid(gd *diag)
-{
-    printf("gantt\n");
-    printf("    title %s\n");
-    printf("    dateFormat X\n");
-    printf("    axisFormat \%s\n");
-    for (int i = 0; i < diag->section_count; i++)
-    {
-        gd_section section = diag->section_list[i];
-        printf("\n");
-        printf("    section %s\n", section.name);
-        printf("    %s\n", section.content);
+        rescurs_free_timestep(step->next);
+        free(step);
     }
 }
 
-void gdg_free(gd *diag)
+void print_timestep(gd_timestep *step)
 {
-    for (int i = 0; i < diag->section_count; i++)
+    gd_timestep *ptr = step;
+    printf("\n| t |");
+    while (ptr != NULL)
     {
-        free(&diag->section_list[i]);
+        printf("%03d|", ptr->t);
+        ptr = ptr->next;
     }
-    free(diag);
+
+    ptr = step;
+    printf("\n|prc|");
+    while (ptr != NULL)
+    {
+        if (ptr->current_process == -1)
+        {
+            printf("   |");
+        }
+        else
+        {
+            printf("%03d|", ptr->current_process);
+        }
+        ptr = ptr->next;
+    }
+    ptr = step;
+    printf("\narrivals :");
+    while (ptr != NULL)
+    {
+        if (ptr->n_arrival > 0)
+        {
+            printf("\nt=%d:", ptr->t);
+            for (int i = 0; i < ptr->n_arrival; i++)
+            {
+                printf("%03d", ptr->arrivals[i]);
+            }
+        }
+    }
+    printf("\n");
 }

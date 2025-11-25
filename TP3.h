@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #ifndef TP3_H
 #define TP3_H
 
