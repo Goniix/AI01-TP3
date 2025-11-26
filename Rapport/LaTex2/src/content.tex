@@ -1,0 +1,91 @@
+\section{Modification du schéma de données}
+
+Une structure \texttt{FIFO} est introduite afin d'encapsuler une liste de processus et permettre des opérations d'enfilage et de défilage en O(1).  
+La fonction \texttt{processus\_free\_recursive()} est ajoutée pour permettre la libération récursive d'une liste complète de processus.  
+Une fonction d'affichage, \texttt{processus\_print()}, est également définie afin de présenter les informations relatives à chaque processus de manière claire et structurée.  
+La fonction \texttt{fifo\_is\_sorted()} est introduite pour vérifier que la FIFO est correctement triée selon un attribut donné.  
+Enfin, la fonction \texttt{fifo\_print()} fournit un affichage formaté du contenu de la FIFO.  
+Comme la structure FIFO conserve désormais sa propre taille, il n'est plus nécessaire de fournir explicitement le nombre de processus lors de son utilisation.
+
+\section{Processus}
+
+\begin{itemize}
+    \item \textbf{t\_processus *processus\_init(int pid, int arrivee, int duree)} \\
+    Crée et initialise un nouveau processus. \\
+    \textbf{Complexité :} O(1) alloue une structure fixe.
+    
+    \item \textbf{void processus\_free(t\_processus **process)} \\
+    Libère un processus unique. \\
+    \textbf{Complexité :} O(1) libération d’un seul bloc mémoire.
+    
+    \item \textbf{void processus\_free\_recursive(t\_processus *process)} \\
+    Libère récursivement une liste de processus. \\
+    \textbf{Complexité :} O(n) chaque nœud est libéré une fois.
+    
+    \item \textbf{t\_processus *processus\_load(char *nom\_fichier, int *processes\_loaded)} \\
+    Lit un fichier et crée une liste chaînée de processus. \\
+    \textbf{Complexité :} O(n) charge une ligne par processus.
+    
+    \item \textbf{void processus\_print(t\_processus *process)} \\
+    Affiche récursivement la liste des processus. \\
+    \textbf{Complexité :} O(n) parcours linéaire de la liste.
+
+\end{itemize}
+
+
+\section{FIFO}
+
+\begin{itemize}
+    \item \textbf{FIFO *fifo\_init()} \\
+    Initialise une FIFO vide. \\
+    \textbf{Complexité :} O(1) alloue une structure simple.
+    
+    \item \textbf{FIFO *fifo\_init\_from\_process(t\_processus *process)} \\
+    Initialise une FIFO à partir d'une liste de processus. \\
+    \textbf{Complexité :} O(n) copie chaque élément une fois.
+    
+    \item \textbf{FIFO *fifo\_init\_sorted\_from\_process(t\_processus *process, PROCESSFIELDS field)} \\
+    Initialise une FIFO triée selon un champ donné. \\
+    \textbf{Complexité :} O(n$^2$) insertion triée répétée sur n éléments.
+    
+    \item \textbf{void fifo\_free(FIFO **queue)} \\
+    Libère une FIFO et tous ses processus. \\
+    \textbf{Complexité :} O(n) libère chaque élément de la file.
+    
+    \item \textbf{bool fifo\_is\_empty(FIFO *queue)} \\
+    Vérifie si la FIFO est vide. \\
+    \textbf{Complexité :} O(1) test direct de la taille.
+    
+    \item \textbf{void fifo\_add(FIFO *queue, t\_processus *process)} \\
+    Ajoute un processus à la fin de la FIFO. \\
+    \textbf{Complexité :} O(1) insertion en queue direct car on possède un pointeur vers le dernier élément de la FIFO.
+    
+    \item \textbf{void fifo\_add\_sorted(FIFO *queue, t\_processus *process, PROCESSFIELDS field, int ignore\_first\_n\_index)} \\
+    Ajoute un processus en maintenant l'ordre selon un champ. \\
+    \textbf{Complexité :} O(n) recherche de la position d’insertion O(n) puis ajout O(1).
+    
+    \item \textbf{t\_processus *fifo\_unqueue(FIFO *queue)} \\
+    Retire le premier processus de la FIFO. \\
+    \textbf{Complexité :} O(1) mise à jour directe du pointeur de tête.
+    
+    \item \textbf{void fifo\_print(FIFO *queue)} \\
+    Affiche tous les processus dans la FIFO. \\
+    \textbf{Complexité :} O(n) un affichage par élément O(1) n fois pour la taille de la liste donc O(n).
+    
+    \item \textbf{bool fifo\_is\_sorted(FIFO *queue, PROCESSFIELDS field)} \\
+    Vérifie si la FIFO est triée selon un champ. \\
+    \textbf{Complexité :} O(n) comparaison séquentielle de chaque éléments avec le suivant.
+\end{itemize}
+
+\section{Ordonnancement}
+
+\begin{itemize}
+    \item \textbf{void simuler\_fcfs(FIFO *tab)} \\
+    Simule l'ordonnancement First-Come, First-Served (FCFS). \\
+    \textbf{Complexité :} A VERIFIER 
+    
+    \item \textbf{void simuler\_sjf(FIFO *tab)} \\
+    Simule l'ordonnancement Shortest Job First (SJF) non préemptif. \\
+    \textbf{Complexité :} A VERIFIER
+\end{itemize}
+

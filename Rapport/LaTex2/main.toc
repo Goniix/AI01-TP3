@@ -1,0 +1,5 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Modification du schéma de données}{1}{section.1}%
+\contentsline {section}{\numberline {2}Processus}{1}{section.2}%
+\contentsline {section}{\numberline {3}FIFO}{1}{section.3}%
+\contentsline {section}{\numberline {4}Ordonnancement}{2}{section.4}%
