@@ -6,29 +6,43 @@ Une fonction d'affichage, \texttt{processus\_print()}, est également définie a
 La fonction \texttt{fifo\_is\_sorted()} est introduite pour vérifier que la FIFO est correctement triée selon un attribut donné.  
 Enfin, la fonction \texttt{fifo\_print()} fournit un affichage formaté du contenu de la FIFO.  
 Comme la structure FIFO conserve désormais sa propre taille, il n'est plus nécessaire de fournir explicitement le nombre de processus lors de son utilisation.
+\\
+\\
+\\
+\textbf{On considère dans  l'analyse de la complexité que les fonctions de la lib C (toutes les fonctions non définies dans TP3.c et main.c) sont de complexité 1! Une comparaison, un retour, 'switch', ont un coût de 1.}
 
 \section{Processus}
 
 \begin{itemize}
     \item \textbf{t\_processus *processus\_init(int pid, int arrivee, int duree)} \\
     Crée et initialise un nouveau processus. \\
-    \textbf{Complexité :} O(1) alloue une structure fixe.
+    \textbf{Complexité :} \\
+        $O(6)$ alloue une structure fixe.\\
+        $\Omega(3)$ quand malloc échoue\\
     
     \item \textbf{void processus\_free(t\_processus **process)} \\
     Libère un processus unique. \\
-    \textbf{Complexité :} O(1) libération d’un seul bloc mémoire.
+    \textbf{Complexité :} \\
+       $ O(4)$ libération du bloc de mémoire \\
+        $\Omega(1)$ le pointeur donné est invalide\\
     
     \item \textbf{void processus\_free\_recursive(t\_processus *process)} \\
     Libère récursivement une liste de processus. \\
-    \textbf{Complexité :} O(n) chaque nœud est libéré une fois.
+    \textbf{Complexité :} \\
+        $O(5n)$ chaque nœud est libéré, avec n le nombre de nœuds \\
+        $\Omega(1)$ le pointeur donné est invalide\\
     
     \item \textbf{t\_processus *processus\_load(char *nom\_fichier, int *processes\_loaded)} \\
     Lit un fichier et crée une liste chaînée de processus. \\
-    \textbf{Complexité :} O(n) charge une ligne par processus.
+    \textbf{Complexité :} \\
+        $O(6 + 14n)$ charge une ligne par processus, avec n le nombre de ligne du fichier.\\
+        $\Omega(8)$ la fichier est vide ou non trouvé\\
     
     \item \textbf{void processus\_print(t\_processus *process)} \\
     Affiche récursivement la liste des processus. \\
-    \textbf{Complexité :} O(n) parcours linéaire de la liste.
+    \textbf{Complexité :} \\
+        $O(2n)$ parcours linéaire de la liste, avec n le nombre de processus\\
+        $\Omega(1)$ le processus donné est NULL\\
 
 \end{itemize}
 
@@ -38,43 +52,63 @@ Comme la structure FIFO conserve désormais sa propre taille, il n'est plus néc
 \begin{itemize}
     \item \textbf{FIFO *fifo\_init()} \\
     Initialise une FIFO vide. \\
-    \textbf{Complexité :} O(1) alloue une structure simple.
+    \textbf{Complexité :} \\
+        $O(5)$ simple allocation\\
+        $\Omega(3)$ quand malloc échoue\\
     
     \item \textbf{FIFO *fifo\_init\_from\_process(t\_processus *process)} \\
     Initialise une FIFO à partir d'une liste de processus. \\
-    \textbf{Complexité :} O(n) copie chaque élément une fois.
+    \textbf{Complexité :} \\
+        $O(7 + 7n)$ parcours linéaire des processus, avec n le nombre de processus\\
+        $\Omega(2)$ le processus donné est NULL\\
     
     \item \textbf{FIFO *fifo\_init\_sorted\_from\_process(t\_processus *process, PROCESSFIELDS field)} \\
     Initialise une FIFO triée selon un champ donné. \\
-    \textbf{Complexité :} O(n$^2$) insertion triée répétée sur n éléments.
+    \textbf{Complexité :} \\
+        $O(8 + m(13 + 3n))$ parcours linéaire des processus, avec m le nombre de processus à ajouter, et n le nombre de processus déjà dans la liste \\
+        $\Omega(2)$ le processus donné est NULL\\
     
     \item \textbf{void fifo\_free(FIFO **queue)} \\
     Libère une FIFO et tous ses processus. \\
-    \textbf{Complexité :} O(n) libère chaque élément de la file.
+    \textbf{Complexité :} \\
+        $O(3+5n)$ parcours linéaire des processus, avec n le nombre de processus dans la liste \\
+        $\Omega(2)$ le processus donné est NULL\\
     
     \item \textbf{bool fifo\_is\_empty(FIFO *queue)} \\
     Vérifie si la FIFO est vide. \\
-    \textbf{Complexité :} O(1) test direct de la taille.
+    \textbf{Complexité :} \\
+        $O(3)$ le processus donné est NULL\\
+        $\Omega(2)$ simple comparaison\\
     
     \item \textbf{void fifo\_add(FIFO *queue, t\_processus *process)} \\
     Ajoute un processus à la fin de la FIFO. \\
-    \textbf{Complexité :} O(1) insertion en queue direct car on possède un pointeur vers le dernier élément de la FIFO.
+    \textbf{Complexité :} \\
+        $O(6)$ FIFO a une référence vers la fin de la queue, pas de parcours nécessaire\\
+        $\Omega(2)$ la FIFO donnée est NULL\\
     
     \item \textbf{void fifo\_add\_sorted(FIFO *queue, t\_processus *process, PROCESSFIELDS field, int ignore\_first\_n\_index)} \\
-    Ajoute un processus en maintenant l'ordre selon un champ. \\
-    \textbf{Complexité :} O(n) recherche de la position d’insertion O(n) puis ajout O(1).
+    Ajoute un processus en maintenant l'ordre selon un champ. 'ignore\_first\_n\_index' garantis que le processus sera placé après i autres processus \\
+    \textbf{Complexité :} \\
+        $O(13 + 2i + 3(n-i)) $ parcours linéaire de la liste, avec i l'index du processus minimum après lequel le processus doit être insérer, et n le nombre de processus déjà dans la liste\\
+        $\Omega(4)$ le processus donné est NULL\\
     
     \item \textbf{t\_processus *fifo\_unqueue(FIFO *queue)} \\
     Retire le premier processus de la FIFO. \\
-    \textbf{Complexité :} O(1) mise à jour directe du pointeur de tête.
+     \textbf{Complexité :} \\
+        $O(7) $ on retire simplement le premier élément de la liste\\
+        $\Omega(4)$ le processus donné est NULL ou vide\\
     
     \item \textbf{void fifo\_print(FIFO *queue)} \\
     Affiche tous les processus dans la FIFO. \\
-    \textbf{Complexité :} O(n) un affichage par élément O(1) n fois pour la taille de la liste donc O(n).
+    \textbf{Complexité :} \\
+        $O(4 +2n) $ parcours récursif de la FIFO\\
+        $\Omega(2)$ la FIFO est NULL\\
     
     \item \textbf{bool fifo\_is\_sorted(FIFO *queue, PROCESSFIELDS field)} \\
     Vérifie si la FIFO est triée selon un champ. \\
-    \textbf{Complexité :} O(n) comparaison séquentielle de chaque éléments avec le suivant.
+    \textbf{Complexité :} \\
+        $O(7 + 2n) $ comparaison séquentielle de chaque éléments avec le suivant.\\
+        $\Omega(4)$ le processus donné est NULL ou vide\\
 \end{itemize}
 
 \section{Ordonnancement}

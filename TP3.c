@@ -52,8 +52,7 @@ t_processus *processus_load(char *nom_fichier, int *processes_loaded)
         char *ret = fgets(line, sizeof(char) * MAX_LINE_LENGTH, file); // on lit la ligne brute
         if (ret == NULL)
         {
-            // printf("!!! EOF reached, nb_process is too big !!!\n");
-            break;
+            break; // EOF REACHED
         }
         int pid, arrive, duree;
         sscanf(line, "%d %d %d", &pid, &arrive, &duree); // extraction des valeurs
