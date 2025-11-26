@@ -1,3 +1,6 @@
+#include "gandiag.c"
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 #ifndef TP3_H
@@ -150,8 +153,9 @@ bool fifo_is_sorted(FIFO *queue, PROCESSFIELDS field);
  * @brief Simule le fonctionnement d'un ordonanceur FCFS, les process sont exécutés dans l'odre où ils arrivent
  *
  * @param tab La FIFO contenant les processes (MODIFIEE)
+ * @param out_steps Une sortie des steps de la simulation, pour pouvoir l'afficher après
  */
-void simuler_fcfs(FIFO *tab);
+void simuler_fcfs(FIFO *tab, gd_timestep *out_steps);
 
 /**
  * @brief Simule le fonctionnement d'un ordonanceur SJF, les process sont exécutés en privilégiant les processus à la durée plus courte

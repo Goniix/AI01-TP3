@@ -53,7 +53,9 @@ int main()
             }
             else
             {
-                simuler_fcfs(queue);
+                gd_timestep *gantt = NULL;
+                simuler_fcfs(queue, gantt);
+                print_timestep(gantt);
                 fifo_free(&queue);
             }
             break;

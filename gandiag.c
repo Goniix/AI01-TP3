@@ -1,14 +1,13 @@
-#include <gandiag.h>
+#include "gandiag.h"
 #include <stdlib.h>
 #include <stdio.h>
 
-gd_timestep *init_timestep(int t, int *arrival, int arrival_count, int current_process)
+gd_timestep *init_timestep(int t, gd_arrival *arrival, int current_process)
 {
     gd_timestep *res = malloc(sizeof(gd_timestep));
     res->t = t;
     res->current_process = current_process;
     res->arrivals = arrival;
-    res->n_arrival = arrival_count;
     res->next = NULL;
     return res;
 }
@@ -61,14 +60,42 @@ void print_timestep(gd_timestep *step)
     printf("\narrivals :");
     while (ptr != NULL)
     {
-        if (ptr->n_arrival > 0)
+        printf("\nt=%d:", ptr->t);
+
+        gd_arrival *arr_ptr = ptr->arrivals;
+        while (arr_ptr != NULL)
         {
-            printf("\nt=%d:", ptr->t);
-            for (int i = 0; i < ptr->n_arrival; i++)
-            {
-                printf("%03d", ptr->arrivals[i]);
-            }
+            printf("%03d", arr_ptr->pid);
+            arr_ptr = arr_ptr->next;
         }
     }
     printf("\n");
+}
+
+gd_arrival *init_arrival(int arrival)
+{
+    gd_arrival *res = malloc(sizeof(gd_arrival));
+    res->pid = arrival;
+    res->next = NULL;
+    return res;
+}
+
+void add_arrival(gd_arrival *current, int new)
+{
+    current->next = init_arrival(new);
+}
+
+void free_arrival(gd_arrival **addrarrival)
+{
+    recurs_free_arrival(*addrarrival);
+    *addrarrival = NULL;
+}
+
+void recurs_free_arrival(gd_arrival *arrival)
+{
+    if (arrival != NULL)
+    {
+        recurs_free_arrival(arrival->next);
+        free(arrival);
+    }
 }

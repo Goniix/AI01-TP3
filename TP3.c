@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include "TP3.h"
 
 #define MAX_LINE_LENGTH 256
@@ -386,8 +383,10 @@ bool fifo_is_sorted(FIFO *queue, PROCESSFIELDS field)
     return true;
 }
 
-void simuler_fcfs(FIFO *tab)
+void simuler_fcfs(FIFO *tab, gd_timestep *out_steps)
 {
+    gd_timestep *gantt = NULL;
+
     // on trie tab par arrivée, donc il ne faut pas s'en resservir après
     FIFO *sortedArrival = fifo_init_sorted_from_process(tab->first, ARRIVEE);
     // la liste des éléments à traiter.
@@ -397,9 +396,14 @@ void simuler_fcfs(FIFO *tab)
     int t = 0;
     int remainingProcessTime = 0;
 
+    int curr_process = -1;
+
     printf("=== Simulation FCFS ===\n");
     while (fifo_is_empty(sortedArrival) == 0 || fifo_is_empty(ready) == 0)
     {
+        gd_arrival *first_arrival = NULL;
+        gd_arrival *curr_arrival = NULL;
+        // gantt = init_timestep(t, curr_arrival, -1);
         // si un process est en cours, on l'avance
         if (remainingProcessTime > 0)
         {
@@ -411,6 +415,7 @@ void simuler_fcfs(FIFO *tab)
             printf("t=%d : fin P%d\n", t, ready->first->pid);
             t_processus *to_free = fifo_unqueue(ready);
             processus_free(&to_free);
+            curr_process = -1;
         }
 
         // on ajoute les process qui arrivent à l'instant t aux process en attente
@@ -419,6 +424,17 @@ void simuler_fcfs(FIFO *tab)
             t_processus *arriving = fifo_unqueue(sortedArrival);
             fifo_add(ready, arriving);
 
+            if (curr_arrival == NULL)
+            {
+                first_arrival = init_arrival(arriving->pid);
+                curr_arrival = first_arrival;
+            }
+            else
+            {
+                gd_arrival *new = init_arrival(arriving->pid);
+                add_arrival(curr_arrival, new);
+                curr_arrival = new;
+            }
             printf("t=%d : arrivee P%d (duree=%d)\n", t, arriving->pid, arriving->duree);
         }
 
@@ -428,6 +444,18 @@ void simuler_fcfs(FIFO *tab)
 
             remainingProcessTime = ready->first->duree;
             printf("t=%d : run P%d (duree=%d)\n", t, ready->first->pid, ready->first->duree);
+            curr_process = ready->first->pid;
+        }
+
+        if (gantt == NULL)
+        {
+            gantt == init_timestep(t, first_arrival, curr_process);
+            out_steps = gantt;
+        }
+        else
+        {
+            gantt->next = init_timestep(t, first_arrival, curr_process);
+            gantt = gantt->next;
         }
 
         t++;
