@@ -27,7 +27,8 @@ int main()
         printf("3. Simuler SJF\n");
         printf("4. Quitter\n");
         printf("Votre choix : ");
-        flush_stdin();
+        // flush_stdin();
+        fflush(stdin);
         char c = '\0';
         scanf("%c", &c);
 
