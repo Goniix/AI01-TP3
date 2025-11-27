@@ -1,4 +1,4 @@
-#include <gandiag.h>
+#include "gandiag.h"
 #include <stdlib.h>
 #include <stdio.h>
 

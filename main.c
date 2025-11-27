@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "TP3.c"
+
+void flush_stdin()
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
+}
 
 int main()
 {
@@ -8,17 +16,29 @@ int main()
     int nb_processus = 0;
     int choix = 0;
     char nom_fichier[256];
+    int quit = 0;
 
     do
     {
-        choix = 0;
+        choix = -1;
         printf("\n===== Menu =====\n");
         printf("1. Charger processus depuis un fichier\n");
         printf("2. Simuler FCFS\n");
         printf("3. Simuler SJF\n");
         printf("4. Quitter\n");
         printf("Votre choix : ");
-        scanf("%d", &choix);
+        flush_stdin();
+        char c = '\0';
+        scanf("%c", &c);
+
+        if (isdigit(c))
+        {
+            choix = c - '0';
+        }
+        else
+        {
+            choix = 0;
+        }
 
         switch (choix)
         {
@@ -54,7 +74,7 @@ int main()
             else
             {
                 simuler_fcfs(queue);
-                fifo_free(&queue);
+                quit = 1;
             }
             break;
 
@@ -66,25 +86,26 @@ int main()
             else
             {
                 simuler_sjf(queue);
-                fifo_free(&queue);
+                quit = 1;
             }
             break;
 
         case 4: // Quitter
             printf("Au revoir !\n");
+            quit = 1;
             break;
 
         default:
             printf("Choix invalide.\n");
         }
 
-    } while (choix != 4);
+    } while (quit == 0);
 
     // Nettoyage mémoire avant sortie
-    if (queue != NULL)
-    {
-        fifo_free(&queue);
-    }
+    // if (queue != NULL)
+    // {
+    //     fifo_free(&queue);
+    // }
 
     return 0;
 }

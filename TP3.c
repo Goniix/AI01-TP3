@@ -24,7 +24,7 @@ t_processus *processus_init(int pid, int arrivee, int duree)
 void processus_free(t_processus **process)
 {
     // on demande un pointeur vers le process (qui est un pointeur en soit) pour pouvoir set le pointeur du process à NULL après free, et éviter des erreurs plus tard
-    if (process && *process)
+    if (process != NULL && *process != NULL)
     {
         free(*process);
         *process = NULL; //
@@ -33,7 +33,7 @@ void processus_free(t_processus **process)
 
 void processus_free_recursive(t_processus *process)
 {
-    if (process)
+    if (process != NULL)
     {
         processus_free_recursive(process->suivant);
         processus_free(&process);
@@ -43,6 +43,10 @@ void processus_free_recursive(t_processus *process)
 t_processus *processus_load(char *nom_fichier, int *processes_loaded)
 {
     FILE *file = fopen(nom_fichier, "r");
+    if (!file)
+    {
+        return NULL;
+    }
     t_processus *head = NULL;
     t_processus *last = NULL;
     (*processes_loaded) = 0;
@@ -142,7 +146,7 @@ FIFO *fifo_init_sorted_from_process(t_processus *process, PROCESSFIELDS field)
 void fifo_free(FIFO **queue)
 {
     // on vérifie la validité du pointeur vers le pointeur de la fifo, ainsi que la validité du poointeur de la fifo
-    if (queue && *queue)
+    if (queue != NULL && *queue != NULL)
     {
         // on free les process de la fifo, la fifo et on détruit le pointeur
         processus_free_recursive((*queue)->first);
